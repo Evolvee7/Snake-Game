@@ -37,8 +37,8 @@ int main()
     Field grid[9][16];
 
     // Set snake position
-    int snake_x = 0;
-    int snake_y = 0;
+    int snake_x = 4;
+    int snake_y = 4;
     grid[snake_y][snake_x] = Field::SNAKE;
 
     int pellet_x = -1;
@@ -183,8 +183,14 @@ bool move_snake(Field grid[9][16], int& snake_x, int& snake_y, Direction dir)
         case Direction::NONE:
             return false;
     }
-    if(target_x < 0 || target_x > 15 || target_y < 0 || target_y > 8)
-        return false;
+    if(target_x < 0)
+        target_x = 15;
+    else if(target_x > 15)
+        target_x = 0;
+    if(target_y < 0)
+        target_y = 8;
+    else if(target_y > 8)
+        target_y = 0;
     
     grid[snake_y][snake_x] = Field::EMPTY;
     grid[target_y][target_x] = Field::SNAKE;
