@@ -23,6 +23,8 @@ void render_screen(Field grid[9][16], SDL_Renderer* renderer);
 
 bool move_snake(Field grid[9][16], int& snake_x, int& snake_y, Direction dir);
 
+void reposition_pellet(Field grid[9][16], int& pellet_x, int& pellet_y);
+
 int main()
 {
     // Initalize SDL2
@@ -38,6 +40,10 @@ int main()
     int snake_x = 0;
     int snake_y = 0;
     grid[snake_y][snake_x] = Field::SNAKE;
+
+    int pellet_x = -1;
+    int pellet_y = -1;
+    reposition_pellet(grid, pellet_x, pellet_y);
 
     render_screen(grid, renderer);
 
@@ -64,19 +70,35 @@ int main()
                         break;
                     case SDLK_UP:
                         if(move_snake(grid, snake_x, snake_y, Direction::UP))
+                        {
+                            if(snake_x == pellet_x && snake_y == pellet_y)
+                                reposition_pellet(grid, pellet_x, pellet_y);
                             render_screen(grid, renderer);
+                        }
                         break;
                     case SDLK_DOWN:
                         if(move_snake(grid, snake_x, snake_y, Direction::DOWN))
+                        {
+                            if(snake_x == pellet_x && snake_y == pellet_y)
+                                reposition_pellet(grid, pellet_x, pellet_y);
                             render_screen(grid, renderer);
+                        }
                         break;
                     case SDLK_LEFT:
                         if(move_snake(grid, snake_x, snake_y, Direction::LEFT))
+                        {
+                            if(snake_x == pellet_x && snake_y == pellet_y)
+                                reposition_pellet(grid, pellet_x, pellet_y);
                             render_screen(grid, renderer);
+                        }
                         break;
                     case SDLK_RIGHT:
                         if(move_snake(grid, snake_x, snake_y, Direction::RIGHT))
+                        {
+                            if(snake_x == pellet_x && snake_y == pellet_y)
+                                reposition_pellet(grid, pellet_x, pellet_y);
                             render_screen(grid, renderer);
+                        }
                         break;
                 }
             }
@@ -167,4 +189,25 @@ bool move_snake(Field grid[9][16], int& snake_x, int& snake_y, Direction dir)
     snake_y = target_y;
 
     return true;
+}
+
+void reposition_pellet(Field grid[9][16], int& pellet_x, int& pellet_y)
+{
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist_x(0, 15);
+    std::uniform_int_distribution<std::mt19937::result_type> dist_y(0, 8);
+
+    int rand_x = dist_x(rng);
+    int rand_y = dist_y(rng);
+    while(grid[rand_y][rand_x] != Field::EMPTY)
+    {
+        int rand_x = dist_x(rng);
+        int rand_y = dist_y(rng);
+    }
+
+    grid[rand_y][rand_x] = Field::PELLET;
+
+    pellet_x = rand_x;
+    pellet_y = rand_y;
 }
