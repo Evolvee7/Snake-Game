@@ -22,7 +22,7 @@ Game::~Game()
 
 void Game::Run()
 {
-    uint32_t move_delay_ms = 500;
+    uint32_t move_delay_ms = 150;
     uint32_t start_ms = SDL_GetTicks();
     Direction next_move_dir = Direction::NONE;
     SDL_Event e;
@@ -37,16 +37,22 @@ void Game::Run()
                 next_move_dir = snake.GetMoveDir();
             
             snake.Move(next_move_dir);
-            
-            if(snake.GetPos() == pellet.GetPos())
+
+            if(snake.IsSelfCollision())
             {
-                // TODO: Make snake grow
-                pellet.Reposition();
+                quit = true;
+                // TODO: Make die animation
             }
-            // if(snake.IsDead())
-            // {
-            //     // TODO: Make die animation
-            // }
+            else if(snake.GetHeadPos() == pellet.GetPos())
+            {
+                snake.Grow();
+                if(snake.GetLength() == 16*9)
+                {
+                    // TODO: Make win animation
+                }
+                else
+                    pellet.Reposition();
+            }
             Render();
         }
 
@@ -86,8 +92,9 @@ void Game::Run()
 
 bool Game::IsOccupied(const Vec2i& pos) const
 {
-    if(snake.GetPos() == pos)
-        return true;
+    for(int i = 0; i < snake.GetLength(); i++)
+        if(snake.GetPositions()[i] == pos)
+            return true;
     if(pellet.GetPos() == pos)
         return true;
     return false;
