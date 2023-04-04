@@ -15,6 +15,8 @@ public:
     void Grow();
     void Draw(SDL_Renderer* renderer);
 
+    void SetLength(int value) { length = value; }
+
     bool IsSelfCollision() const;
     int GetLength() const { return length; }
     Direction GetMoveDir() const { return move_dir; }

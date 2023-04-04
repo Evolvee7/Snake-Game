@@ -22,7 +22,7 @@ Game::~Game()
 
 void Game::Run()
 {
-    uint32_t move_delay_ms = 150;
+    constexpr uint32_t move_delay_ms = 150;
     uint32_t start_ms = SDL_GetTicks();
     Direction next_move_dir = Direction::NONE;
     SDL_Event e;
@@ -40,8 +40,8 @@ void Game::Run()
 
             if(snake.IsSelfCollision())
             {
-                quit = true;
-                // TODO: Make die animation
+                GameOver();
+                return;
             }
             else if(snake.GetHeadPos() == pellet.GetPos())
             {
@@ -86,6 +86,47 @@ void Game::Run()
                         break;
                 }
             }
+        }
+    }
+}
+
+void Game::GameOver()
+{
+    constexpr int anim_time_ms = 2000;
+    const int delay_ms = anim_time_ms/snake.GetLength();
+    uint32_t start_ms = SDL_GetTicks();
+
+    while(snake.GetLength() > 0)
+    {
+        if(SDL_TICKS_PASSED(SDL_GetTicks() - delay_ms, start_ms))
+        {
+            start_ms = SDL_GetTicks();
+
+            // Draw background
+            SDL_SetRenderDrawColor(renderer, 120, 120, 120, SDL_ALPHA_OPAQUE);
+            SDL_RenderClear(renderer);
+
+            // Make mesh-like structure
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+            SDL_Rect rect{0, 0, 50, 50};
+            for(int y = 0; y < 9; y++)
+            {
+                for(int x = 0; x < 16; x++)
+                {
+                    rect.x = x * 50;
+                    rect.y = y * 50;
+                    SDL_RenderDrawRect(renderer, &rect);
+                }
+            }
+
+            // Render all actors
+            pellet.Draw(renderer);
+            snake.Draw(renderer);
+
+            // Display
+            SDL_RenderPresent(renderer);
+
+            snake.SetLength(snake.GetLength() - 1);
         }
     }
 }
