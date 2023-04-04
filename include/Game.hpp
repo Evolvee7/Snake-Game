@@ -2,6 +2,7 @@
 
 #include "Pellet.hpp"
 #include "Snake.hpp"
+#include <memory>
 #include <SDL2/SDL.h>
 
 
@@ -14,6 +15,7 @@ public:
 
     void Run();
 
+    const std::unique_ptr<Vec2i[]> GetUnoccupiedPositions(int& count) const;
     bool IsOccupied(const Vec2i& pos) const;
 
 private:

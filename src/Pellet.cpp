@@ -13,22 +13,14 @@ void Pellet::Reposition()
 {
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist_x(0, 15);
-    std::uniform_int_distribution<std::mt19937::result_type> dist_y(0, 8);
 
-    Vec2i rand_pos;
-    rand_pos.x = dist_x(rng);
-    rand_pos.y = dist_y(rng);
-    while(game->IsOccupied(rand_pos))
-    {
-        rand_pos.x = dist_x(rng);
-        rand_pos.y = dist_y(rng);
-    }
+    int unoccupied_count;
+    const std::unique_ptr<Vec2i[]>& unoccupied = game->GetUnoccupiedPositions(unoccupied_count);
 
-    // TODO: Instead of infinitly randomizing pos and checking if is occupied
-    //       gather all unoccupied positions and then get one (so we can see when we win :P)
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, unoccupied_count-1);
 
-    pos = rand_pos;
+    int index = dist(rng);
+    pos = unoccupied[index];
 }
 
 void Pellet::Draw(SDL_Renderer* renderer)

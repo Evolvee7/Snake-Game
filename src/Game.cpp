@@ -4,7 +4,7 @@
 
 
 Game::Game(int screen_w, int screen_h, const char* title):
-snake(Vec2i{4,4}, this), pellet(this)
+snake(Vec2i{4,4}), pellet(this)
 {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(screen_w, screen_h, 0, &window, &renderer);
@@ -88,6 +88,44 @@ void Game::Run()
             }
         }
     }
+}
+
+const std::unique_ptr<Vec2i[]> Game::GetUnoccupiedPositions(int& count) const
+{
+    // Find all occupied positions
+    bool occupied[16*9];
+
+    Vec2i body_pos;
+    for(int i = 0; i < snake.GetLength(); i++)
+    {
+        body_pos = snake.GetPositions()[i];
+
+        occupied[body_pos.y*16 + body_pos.x] = true;
+    }
+    occupied[pellet.GetPos().y*16, pellet.GetPos().x] = true;
+
+    // Count unoccupied positions
+    count = 0;
+    for(int i = 0; i < 16*9; i++)
+        if(occupied[i] == false)
+            count++;
+    
+    // Create array for unoccupied positions
+    std::unique_ptr<Vec2i[]> unoccupied = std::make_unique<Vec2i[]>(16*9);
+    int i = 0;
+    for(int y = 0; y < 9; y++)
+    {
+        for(int x = 0; x < 16; x++)
+        {
+            if(occupied[y*16 + x] == false)
+            {
+                unoccupied[i] = Vec2i{x,y};
+                i++;
+            }
+        }
+    }
+
+    return unoccupied;
 }
 
 bool Game::IsOccupied(const Vec2i& pos) const

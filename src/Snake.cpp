@@ -1,9 +1,8 @@
-#include "Game.hpp"
 #include "Snake.hpp"
 
 
 
-Snake::Snake(const Vec2i& pos, Game* game): game(game)
+Snake::Snake(const Vec2i& pos)
 {
     body[0] = pos;
     move_dir = Direction::NONE;

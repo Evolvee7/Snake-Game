@@ -6,12 +6,10 @@
 
 
 
-class Game;
-
 class Snake
 {
 public:
-    Snake(const Vec2i& pos, Game* game);
+    Snake(const Vec2i& pos);
 
     void Move(Direction dir);
     void Grow();
@@ -27,6 +25,4 @@ private:
     Vec2i body[16*9];
     int length = 1;
     Direction move_dir;
-
-    Game* game;
 };
