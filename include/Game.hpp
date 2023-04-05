@@ -14,7 +14,8 @@ public:
     ~Game();
 
     void Run();
-    void GameOver();
+    void OnWin();
+    void OnGameOver();
 
     const std::unique_ptr<Vec2i[]> GetUnoccupiedPositions(int& count) const;
 

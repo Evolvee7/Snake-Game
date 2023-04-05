@@ -38,7 +38,7 @@ void Game::Run()
             
             if(snake.WillCollide(next_move_dir))
             {
-                GameOver();
+                OnGameOver();
                 return;
             }
 
@@ -48,7 +48,8 @@ void Game::Run()
                 snake.Grow();
                 if(snake.GetLength() == 16*9)
                 {
-                    // TODO: Make win animation
+                    OnWin();
+                    return;
                 }
                 else
                     pellet.Reposition();
@@ -90,7 +91,33 @@ void Game::Run()
     }
 }
 
-void Game::GameOver()
+void Game::OnWin()
+{
+    Vec2i display_positions[]{
+        {0,0},                          {4,0},      {6,0},      {8,0},                  {11,0},
+        {0,1},          {2,1},          {4,1},      {6,1},      {8,1},  {9,1},          {11,1},
+        {0,2},  {1,2},          {3,2},  {4,2},      {6,2},      {8,2},          {10,2}, {11,2},
+        {0,3},                          {4,3},      {6,3},      {8,3},                  {11,3}
+    };
+    Vec2i offset{2,2};
+
+    SDL_SetRenderDrawColor(renderer, 50, 180, 50, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 0, 50, 0, SDL_ALPHA_OPAQUE);
+    SDL_Rect rect{0, 0, 50, 50};
+    for(const Vec2i& pos : display_positions)
+    {
+        rect.x = (offset.x + pos.x)*50;
+        rect.y = (offset.y + pos.y)*50;
+        SDL_RenderFillRect(renderer, &rect);
+    }
+    SDL_RenderPresent(renderer);
+
+    const uint32_t start_ms = SDL_GetTicks();
+    while(SDL_TICKS_PASSED(SDL_GetTicks() - 3000, start_ms) == false);
+}
+
+void Game::OnGameOver()
 {
     constexpr int anim_time_ms = 2000;
     const int delay_ms = anim_time_ms/snake.GetLength();
