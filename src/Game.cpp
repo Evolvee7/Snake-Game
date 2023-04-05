@@ -1,5 +1,5 @@
 #include "Game.hpp"
-#include "Utilities.cpp"
+#include "Utilities.hpp"
 
 
 
@@ -36,9 +36,7 @@ void Game::Run()
             if(are_opposite(snake.GetMoveDir(), next_move_dir))
                 next_move_dir = snake.GetMoveDir();
             
-            // Check collision with tail before movement
-            const Vec2i next_snake_pos = get_position_in_front(snake.GetHeadPos(), next_move_dir);
-            if(next_snake_pos != snake.GetBackPos() && snake.IsCollision(next_snake_pos))
+            if(snake.WillCollide(next_move_dir))
             {
                 GameOver();
                 return;
@@ -146,16 +144,6 @@ const std::unique_ptr<Vec2i[]> Game::GetUnoccupiedPositions(int& count) const
     }
 
     return unoccupied;
-}
-
-bool Game::IsOccupied(const Vec2i& pos) const
-{
-    for(int i = 0; i < snake.GetLength(); i++)
-        if(snake.GetPositions()[i] == pos)
-            return true;
-    if(pellet.GetPos() == pos)
-        return true;
-    return false;
 }
 
 void Game::Render()

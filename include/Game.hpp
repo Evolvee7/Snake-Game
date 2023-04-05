@@ -17,7 +17,6 @@ public:
     void GameOver();
 
     const std::unique_ptr<Vec2i[]> GetUnoccupiedPositions(int& count) const;
-    bool IsOccupied(const Vec2i& pos) const;
 
 private:
     void Render();

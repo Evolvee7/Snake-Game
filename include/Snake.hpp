@@ -17,6 +17,7 @@ public:
 
     void SetLength(int value) { length = value; }
 
+    bool WillCollide(Direction dir) const;
     bool IsCollision(const Vec2i& pos) const;
     bool IsSelfCollision() const;
     int GetLength() const { return length; }
@@ -29,4 +30,6 @@ private:
     Vec2i body[16*9];
     int length = 1;
     Direction move_dir;
+
+    Vec2i* head = &body[0];
 };

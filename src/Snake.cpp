@@ -1,10 +1,11 @@
 #include "Snake.hpp"
+#include "Utilities.hpp"
 
 
 
 Snake::Snake(const Vec2i& pos)
 {
-    body[0] = pos;
+    *head = pos;
     move_dir = Direction::NONE;
 }
 
@@ -18,34 +19,34 @@ void Snake::Move(Direction dir)
     switch(dir)
     {
         case Direction::UP:
-            body[0].y--;
+            head->y--;
             break;
         case Direction::DOWN:
-            body[0].y++;
+            head->y++;
             break;
         case Direction::LEFT:
-            body[0].x--;
+            head->x--;
             break;
         case Direction::RIGHT:
-            body[0].x++;
+            head->x++;
             break;
     }
 
-    if(body[0].x < 0)
-        body[0].x = 15;
-    else if(body[0].x > 15)
-        body[0].x = 0;
-    if(body[0].y < 0)
-        body[0].y = 8;
-    else if(body[0].y > 8)
-        body[0].y = 0;
+    if(head->x < 0)
+        head->x = 15;
+    else if(head->x > 15)
+        head->x = 0;
+    if(head->y < 0)
+        head->y = 8;
+    else if(head->y > 8)
+        head->y = 0;
 
     move_dir = dir;
 }
 
 void Snake::Grow()
 {
-    body[length] = body[length-1];
+    body[length] = GetBackPos();
     length++;
 }
 
@@ -62,6 +63,15 @@ void Snake::Draw(SDL_Renderer* renderer)
     }
 }
 
+bool Snake::WillCollide(Direction dir) const
+{
+    const Vec2i next_snake_pos = get_position_in_front(*head, dir);
+    
+    if(next_snake_pos != GetBackPos() && IsCollision(next_snake_pos))
+        return true;
+    return false;
+}
+
 bool Snake::IsCollision(const Vec2i& pos) const
 {
     for(int i = 0; i < length; i++)
@@ -76,7 +86,7 @@ bool Snake::IsSelfCollision() const
 {
     for(int i = 1; i < length; i++)
     {
-        if(body[0] == body[i])
+        if(*head == body[i])
             return true;
     }
     return false;
