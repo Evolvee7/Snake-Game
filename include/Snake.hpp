@@ -17,10 +17,12 @@ public:
 
     void SetLength(int value) { length = value; }
 
+    bool IsCollision(const Vec2i& pos) const;
     bool IsSelfCollision() const;
     int GetLength() const { return length; }
     Direction GetMoveDir() const { return move_dir; }
     const Vec2i& GetHeadPos() const { return body[0]; }
+    const Vec2i& GetBackPos() const { return body[length-1]; }
     const Vec2i* GetPositions() const { return body; }
 
 private:

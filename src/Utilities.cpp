@@ -15,3 +15,16 @@ bool are_opposite(Direction dir1, Direction dir2)
 
     return false;
 }
+
+Vec2i get_position_in_front(const Vec2i& pos, Direction dir)
+{
+    if(dir == Direction::UP)
+        return Vec2i{pos.x, pos.y-1};
+    if(dir == Direction::DOWN)
+        return Vec2i{pos.x, pos.y+1};
+    if(dir == Direction::LEFT)
+        return Vec2i{pos.x-1, pos.y};
+    if(dir == Direction::RIGHT)
+        return Vec2i{pos.x+1, pos.y};
+    return pos;
+}

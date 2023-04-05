@@ -62,6 +62,16 @@ void Snake::Draw(SDL_Renderer* renderer)
     }
 }
 
+bool Snake::IsCollision(const Vec2i& pos) const
+{
+    for(int i = 0; i < length; i++)
+    {
+        if(pos == body[i])
+            return true;
+    }
+    return false;
+}
+
 bool Snake::IsSelfCollision() const
 {
     for(int i = 1; i < length; i++)

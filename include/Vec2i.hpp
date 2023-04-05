@@ -11,4 +11,9 @@ struct Vec2i
     {
         return x == other.x && y == other.y;
     }
+
+    bool operator != (const Vec2i& other) const
+    {
+        return !(*this == other);
+    }
 };
