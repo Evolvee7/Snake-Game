@@ -23,7 +23,6 @@ private:
     void Render();
 
 private:
-    bool quit = false;
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
 

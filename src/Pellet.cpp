@@ -6,7 +6,6 @@
 
 Pellet::Pellet(Game* game): game(game)
 {
-    Reposition();
 }
 
 void Pellet::Reposition()

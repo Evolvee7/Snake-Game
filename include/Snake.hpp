@@ -19,7 +19,6 @@ public:
 
     bool WillCollide(Direction dir) const;
     bool IsCollision(const Vec2i& pos) const;
-    bool IsSelfCollision() const;
     int GetLength() const { return length; }
     Direction GetMoveDir() const { return move_dir; }
     const Vec2i& GetHeadPos() const { return body[0]; }
@@ -31,5 +30,5 @@ private:
     int length = 1;
     Direction move_dir;
 
-    Vec2i* head = &body[0];
+    Vec2i& head = body[0];
 };

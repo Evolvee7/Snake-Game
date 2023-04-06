@@ -9,6 +9,8 @@ snake(Vec2i{4,4}), pellet(this)
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(screen_w, screen_h, 0, &window, &renderer);
     SDL_SetWindowTitle(window, title);
+
+    pellet.Reposition();
 }
 
 Game::~Game()
@@ -27,26 +29,30 @@ void Game::Run()
     Direction next_move_dir = Direction::NONE;
     SDL_Event e;
 
-    while(!quit)
+    while(true)
     {
         if(SDL_TICKS_PASSED(SDL_GetTicks() - move_delay_ms, start_ms))
         {
             start_ms = SDL_GetTicks();
 
+            // Prevent movement in opposite direction
             if(are_opposite(snake.GetMoveDir(), next_move_dir))
                 next_move_dir = snake.GetMoveDir();
             
-            if(snake.WillCollide(next_move_dir))
+            // Predict self-collision
+            if(snake.WillCollide(next_move_dir)) // gameover condition
             {
                 OnGameOver();
                 return;
             }
 
             snake.Move(next_move_dir);
+
+            // Should snake do om nom nom?
             if(snake.GetHeadPos() == pellet.GetPos())
             {
                 snake.Grow();
-                if(snake.GetLength() == 16*9)
+                if(snake.GetLength() == 16*9) // win condition
                 {
                     OnWin();
                     return;
@@ -61,18 +67,16 @@ void Game::Run()
         {
             if(e.type == SDL_QUIT)
             {
-                quit = true;
+                return;
             }
             else if(e.type == SDL_KEYDOWN)
             {
                 switch(e.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
-                        quit = true;
-                        break;
+                        return;
                     case SDLK_q:
-                        quit = true;
-                        break;
+                        return;
                     case SDLK_UP:
                         next_move_dir = Direction::UP;
                         break;
@@ -113,6 +117,7 @@ void Game::OnWin()
     }
     SDL_RenderPresent(renderer);
 
+    // Hold win screen for some time
     const uint32_t start_ms = SDL_GetTicks();
     while(SDL_TICKS_PASSED(SDL_GetTicks() - 3000, start_ms) == false);
 }
@@ -125,6 +130,7 @@ void Game::OnGameOver()
 
     while(snake.GetLength() > 0)
     {
+        // Delay every step
         if(SDL_TICKS_PASSED(SDL_GetTicks() - delay_ms, start_ms))
         {
             start_ms = SDL_GetTicks();
